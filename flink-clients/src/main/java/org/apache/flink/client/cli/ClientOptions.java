@@ -24,6 +24,7 @@ import org.apache.flink.configuration.ConfigOptions;
 import java.time.Duration;
 
 /** Describes a client configuration parameter. */
+/** todo 描述客户端配置参数 */
 @PublicEvolving
 public class ClientOptions {
 

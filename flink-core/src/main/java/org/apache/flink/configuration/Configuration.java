@@ -41,6 +41,7 @@ import java.util.Set;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** Lightweight configuration object which stores key/value pairs. */
+/** todo 存储键值对的轻量级配置对象 */
 @Public
 public class Configuration extends ExecutionConfig.GlobalJobParameters
         implements IOReadableWritable,
@@ -60,6 +61,7 @@ public class Configuration extends ExecutionConfig.GlobalJobParameters
     private static final byte TYPE_BYTES = 6;
 
     /** The log object used for debugging. */
+    /** todo 用于调试的日志对象。*/
     private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
     /** Stores the concrete key/value pairs of this configuration object. */

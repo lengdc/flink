@@ -299,6 +299,7 @@ public abstract class FileSystem {
 
     /**
      * Initializes the shared file system settings.
+     * todo 初始化共享文件系统设置
      *
      * <p>The given configuration is passed to each file system factory to initialize the respective
      * file systems. Because the configuration of file systems may be different subsequent to the

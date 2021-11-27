@@ -25,6 +25,8 @@ import java.util.stream.Stream;
 /**
  * An interface used to discover the appropriate {@link ClusterClientFactory cluster client factory}
  * based on the provided {@link Configuration}.
+ *
+ * todo 用于根据提供的 {@link Configuration} 发现合适的 {@link ClusterClientFactory 集群客户端工厂}的接口。
  */
 public interface ClusterClientServiceLoader {
 

@@ -84,11 +84,13 @@ import static org.apache.flink.client.cli.CliFrontendParser.HELP_OPTION;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** Implementation of a simple command line frontend for executing programs. */
+/** TODO 用于执行程序的简单命令行前端的实现 */
 public class CliFrontend {
 
     private static final Logger LOG = LoggerFactory.getLogger(CliFrontend.class);
 
     // actions
+    // todo 用户执行的命令
     private static final String ACTION_RUN = "run";
     private static final String ACTION_RUN_APPLICATION = "run-application";
     private static final String ACTION_INFO = "info";
@@ -98,27 +100,36 @@ public class CliFrontend {
     private static final String ACTION_SAVEPOINT = "savepoint";
 
     // configuration dir parameters
+    // todo 配置文件目录参数
     private static final String CONFIG_DIRECTORY_FALLBACK_1 = "../conf";
     private static final String CONFIG_DIRECTORY_FALLBACK_2 = "conf";
 
     // --------------------------------------------------------------------------------------------
 
+    // todo 存储键值对的轻量级配置对象
     private final Configuration configuration;
 
+    // todo 自定义命令行接口
     private final List<CustomCommandLine> customCommandLines;
 
+    // todo 自定义命令行参数
     private final Options customCommandLineOptions;
 
+    // todo 客户端超时时间
     private final Duration clientTimeout;
 
+    // todo 默认并行度
     private final int defaultParallelism;
 
+    // todo 集群客户端服务加载器
     private final ClusterClientServiceLoader clusterClientServiceLoader;
 
+    // todo 根据参数对象和命令行参数集合 构造函数
     public CliFrontend(Configuration configuration, List<CustomCommandLine> customCommandLines) {
         this(configuration, new DefaultClusterClientServiceLoader(), customCommandLines);
     }
 
+    // todo 根据参数对象、集群客户端服务加载器和命令行参数集合 改造函数
     public CliFrontend(
             Configuration configuration,
             ClusterClientServiceLoader clusterClientServiceLoader,
@@ -127,17 +138,23 @@ public class CliFrontend {
         this.customCommandLines = checkNotNull(customCommandLines);
         this.clusterClientServiceLoader = checkNotNull(clusterClientServiceLoader);
 
+        //todo 初始化共享文件系统设置
         FileSystem.initialize(
                 configuration, PluginUtils.createPluginManagerFromRootFolder(configuration));
 
         this.customCommandLineOptions = new Options();
 
+        //todo 遍历自定义命令行集合
         for (CustomCommandLine customCommandLine : customCommandLines) {
+            // todo 将自定义选项添加到现有的常规选项
             customCommandLine.addGeneralOptions(customCommandLineOptions);
+            // todo 向现有运行选项添加自定义选项。
             customCommandLine.addRunOptions(customCommandLineOptions);
         }
 
+        // todo 获取系统超时时间
         this.clientTimeout = configuration.get(ClientOptions.CLIENT_TIMEOUT);
+        // todo 获取系统默认并行度
         this.defaultParallelism = configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM);
     }
 
@@ -148,6 +165,7 @@ public class CliFrontend {
     /**
      * Getter which returns a copy of the associated configuration.
      *
+     * todo 获取相关参数对象的副本
      * @return Copy of the associated configuration
      */
     public Configuration getConfiguration() {
@@ -158,12 +176,14 @@ public class CliFrontend {
         return copiedConfiguration;
     }
 
+    /** todo 获取自定义命令行选项 */
     public Options getCustomCommandLineOptions() {
         return customCommandLineOptions;
     }
 
     // --------------------------------------------------------------------------------------------
     //  Execute Actions
+    //  todo 执行 runApplication 操作
     // --------------------------------------------------------------------------------------------
 
     protected void runApplication(String[] args) throws Exception {
@@ -215,7 +235,7 @@ public class CliFrontend {
 
     /**
      * Executions the run action.
-     *
+     * todo 执行 run 操作
      * @param args Command line arguments for the run action.
      */
     protected void run(String[] args) throws Exception {
@@ -248,6 +268,7 @@ public class CliFrontend {
     }
 
     /** Get all provided libraries needed to run the program from the ProgramOptions. */
+    /** todo  从 ProgramOptions 获取运行程序所需的所有提供的库。 */
     private List<URL> getJobJarAndDependencies(ProgramOptions programOptions)
             throws CliArgsException {
         String entryPointClass = programOptions.getEntryPointClassName();
@@ -315,6 +336,7 @@ public class CliFrontend {
     /**
      * Executes the info action.
      *
+     * todo 执行 info 命令操作
      * @param args Command line arguments for the info action.
      */
     protected void info(String[] args) throws Exception {
@@ -390,7 +412,7 @@ public class CliFrontend {
 
     /**
      * Executes the list action.
-     *
+     * todo 执行list命令操作
      * @param args Command line arguments for the list action.
      */
     protected void list(String[] args) throws Exception {
@@ -530,7 +552,7 @@ public class CliFrontend {
 
     /**
      * Executes the STOP action.
-     *
+     * todo 执行stop命令操作
      * @param args Command line arguments for the stop action.
      */
     protected void stop(String[] args) throws Exception {
@@ -587,7 +609,7 @@ public class CliFrontend {
 
     /**
      * Executes the CANCEL action.
-     *
+     * todo 执行cancel命令操作
      * @param args Command line arguments for the cancel action.
      */
     protected void cancel(String[] args) throws Exception {
@@ -692,7 +714,7 @@ public class CliFrontend {
 
     /**
      * Executes the SAVEPOINT action.
-     *
+     * todo 执行savepoint命令操作
      * @param args Command line arguments for the savepoint action.
      */
     protected void savepoint(String[] args) throws Exception {
@@ -756,6 +778,7 @@ public class CliFrontend {
     }
 
     /** Sends a SavepointTriggerMessage to the job manager. */
+    /** todo 向作业管理器发送 SavepointTriggerMessage */
     private void triggerSavepoint(
             ClusterClient<?> clusterClient, JobID jobId, String savepointDirectory)
             throws FlinkException {
@@ -780,6 +803,7 @@ public class CliFrontend {
     }
 
     /** Sends a SavepointDisposalRequest to the job manager. */
+    /** todo 向作业管理器发送 SavepointDisposalRequest*/
     private void disposeSavepoint(ClusterClient<?> clusterClient, String savepointPath)
             throws FlinkException {
         checkNotNull(
@@ -805,6 +829,7 @@ public class CliFrontend {
 
     // --------------------------------------------------------------------------------------------
     //  Interaction with programs and JobManager
+    //  todo 应用程序和JobManager的交互
     // --------------------------------------------------------------------------------------------
 
     protected void executeProgram(final Configuration configuration, final PackagedProgram program)
@@ -816,6 +841,8 @@ public class CliFrontend {
     /**
      * Creates a Packaged program from the given command line options.
      *
+     * todo 从给定的命令行选项创建打包程序。
+     *
      * @return A PackagedProgram (upon success)
      */
     PackagedProgram buildProgram(final ProgramOptions runOptions)
@@ -826,6 +853,8 @@ public class CliFrontend {
     /**
      * Creates a Packaged program from the given command line options and the
      * effectiveConfiguration.
+     *
+     * todo 根据给定的命令行选项和有效配置创建打包程序。
      *
      * @return A PackagedProgram (upon success)
      */
@@ -853,7 +882,7 @@ public class CliFrontend {
 
     /**
      * Gets the JAR file from the path.
-     *
+     * todo 从指定的路径中获取jar包文件
      * @param jarFilePath The path of JAR file
      * @return The JAR file
      * @throws FileNotFoundException The JAR file does not exist.
@@ -871,10 +900,13 @@ public class CliFrontend {
 
     // --------------------------------------------------------------------------------------------
     //  Logging and Exception Handling
+    //  todo 日志记录和异常处理
     // --------------------------------------------------------------------------------------------
 
     /**
      * Displays an exception message for incorrect command line arguments.
+     *
+     * todo 显示错误的命令行参数的异常消息。
      *
      * @param e The exception to display.
      * @return The return code for the process.
@@ -891,6 +923,8 @@ public class CliFrontend {
     /**
      * Displays an optional exception message for incorrect program parametrization.
      *
+     * todo 显示错误的程序参数化的选项的异常信息。
+     *
      * @param e The exception to display.
      * @return The return code for the process.
      */
@@ -902,6 +936,8 @@ public class CliFrontend {
 
     /**
      * Displays a message for a program without a job to execute.
+     *
+     * todo 为没有作业要执行的程序显示消息。
      *
      * @return The return code for the process.
      */
@@ -915,6 +951,8 @@ public class CliFrontend {
 
     /**
      * Displays an exception message.
+     *
+     * todo 显示异常消息。
      *
      * @param t The exception to display.
      * @return The return code for the process.
@@ -1110,17 +1148,21 @@ public class CliFrontend {
     }
 
     /** Submits the job based on the arguments. */
+    /** todo 根据用户输入的参数提交作业 */
     public static void main(final String[] args) {
         EnvironmentInformation.logEnvironmentInfo(LOG, "Command Line Client", args);
 
         // 1. find the configuration directory
+        // todo 1. 查找配置目录
         final String configurationDirectory = getConfigurationDirectoryFromEnv();
 
         // 2. load the global configuration
+        // todo 2.加载全局配置
         final Configuration configuration =
                 GlobalConfiguration.loadConfiguration(configurationDirectory);
 
         // 3. load the custom command lines
+        // todo 3. 加载自定义命令行
         final List<CustomCommandLine> customCommandLines =
                 loadCustomCommandLines(configuration, configurationDirectory);
 

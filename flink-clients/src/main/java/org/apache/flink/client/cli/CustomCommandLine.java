@@ -25,6 +25,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 /** Custom command-line interface to load hooks for the command-line interface. */
+/** todo 自定义命令行接口，用于加载命令行接口的钩子 */
 public interface CustomCommandLine {
 
     /**
@@ -45,13 +46,15 @@ public interface CustomCommandLine {
     /**
      * Adds custom options to the existing run options.
      *
+     * todo 向现有运行选项添加自定义选项。
      * @param baseOptions The existing options.
      */
-    void addRunOptions(Options baseOptions);
+    void  addRunOptions(Options baseOptions);
 
     /**
      * Adds custom options to the existing general options.
      *
+     * todo 将自定义选项添加到现有的常规选项
      * @param baseOptions The existing options.
      */
     void addGeneralOptions(Options baseOptions);
